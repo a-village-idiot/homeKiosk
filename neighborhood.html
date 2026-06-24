@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Neighborhood</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="map-page">
+
+  <nav class="back-bar">
+    <a href="index.html" class="back-btn">← Back</a>
+    <h2>The Neighborhood</h2>
+  </nav>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // TODO: Replace with your home's actual coordinates 34.195° N, -84.484° W
+    const HOME_LAT = 34.195;
+    const HOME_LNG = -84.484;
+
+    const map = L.map('map').setView([HOME_LAT, HOME_LNG], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Home marker
+    L.marker([HOME_LAT, HOME_LNG])
+      .addTo(map)
+      .bindPopup('<strong>Home</strong>')
+      .openPopup();
+
+    // TODO: Add nearby points of interest below
+    // Example:
+    // L.marker([37.7760, -122.4180])
+    //   .addTo(map)
+    //   .bindPopup('<strong>Coffee Shop</strong><br>0.3 miles away');
+  </script>
+
+</body>
+</html>
