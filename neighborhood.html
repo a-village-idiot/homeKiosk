@@ -14,13 +14,21 @@
     <h2>The Neighborhood</h2>
   </nav>
 
-  <div id="map"></div>
+  <div class="map-wrapper">
+    <div id="map"></div>
+
+    <div class="cat-buttons">
+      <button class="cat-btn" data-cat="essentials">🏠 The Essentials</button>
+      <button class="cat-btn" data-cat="outdoors">🌲 Outdoors &amp; Adventure</button>
+      <button class="cat-btn" data-cat="shopping">🛍️ Shopping, Dining &amp; Entertainment</button>
+      <button class="cat-btn" data-cat="health">💆 Health, Wellness &amp; Beauty</button>
+    </div>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // TODO: Replace with your home's actual coordinates 34.195° N, -84.484° W
-    const HOME_LAT = 34.195;
-    const HOME_LNG = -84.483;
+    const HOME_LAT = 34.171247;
+    const HOME_LNG = -84.504406;
 
     const map = L.map('map').setView([HOME_LAT, HOME_LNG], 15);
 
@@ -28,17 +36,131 @@
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Home marker
-    L.marker([HOME_LAT, HOME_LNG])
-      .addTo(map)
-      .bindPopup('<strong>Home</strong>')
-      .openPopup();
+    // ── Home marker (always visible) ─────────────────────────
+    const homeIcon = L.divIcon({
+      html: `<div class="home-pin">🏠</div>`,
+      className: '',
+      iconSize: [48, 48],
+      iconAnchor: [24, 48],
+      popupAnchor: [0, -52]
+    });
 
-    // TODO: Add nearby points of interest below
-    // Example:
-    // L.marker([37.7760, -122.4180])
-    //   .addTo(map)
-    //   .bindPopup('<strong>Coffee Shop</strong><br>0.3 miles away');
+    const homeMarker = L.marker([HOME_LAT, HOME_LNG], { icon: homeIcon })
+      .addTo(map)
+      .bindPopup('<strong>Home sweet home</strong>');
+
+    // ── Category storage ─────────────────────────────────────
+    const categories = {
+      essentials: [],
+      outdoors:   [],
+      shopping:   [],
+      health:     []
+    };
+
+    // ── Photo marker helper ──────────────────────────────────
+    // Markers start hidden. They appear when their category button is toggled.
+    function photoMarker(lat, lng, img, label, popup, category) {
+      const icon = L.divIcon({
+        html: `<div class="photo-pin" title="${label}">
+                 <img src="${img}" alt="${label}" />
+               </div>`,
+        className: '',
+        iconSize: [56, 56],
+        iconAnchor: [28, 56],
+        popupAnchor: [0, -60]
+      });
+      const marker = L.marker([lat, lng], { icon }).bindPopup(popup);
+      categories[category].push(marker);
+    }
+
+    // ── Points of interest ───────────────────────────────────
+    // Add more by copying a photoMarker() block.
+    // Drop photos into assets/photos/ and reference them below.
+
+    // OUTDOORS & ADVENTURE
+    photoMarker(
+      34.16161326138491, -84.5399021079638,
+      'assets/photos/blanketscreek.jpg',
+      'Blankets Creek Mountain Bike Trails',
+      `<div class="poi-popup">
+         <img src="assets/photos/Blanketscreek2.jpg" alt="Blankets Creek" />
+         <div class="poi-popup__body">
+           <strong>Blankets Creek Mountain Bike Park</strong>
+           <p>9 min drive · 330-acre park with 15+ miles of trails</p>
+         </div>
+       </div>`,
+      'outdoors'
+    );
+
+    // Shopping and Entertainment
+    photoMarker(
+      34.23487566331218, -84.49569346915061,
+      'assets/photos/The-mill-on-ettowah2.jpg',
+      'The Mill on Ettowah',
+      `<div class="poi-popup">
+         <img src="assets/photos/themillonettowah.jpg" alt="The Mill on Ettowah" />
+         <div class="poi-popup__body">
+           <strong>The Mill on Ettowah</strong>
+           <p>12 min drive · Former cotton mill redeveloped with shops, eating and drinking spots, plus a brewery and outdoor stage for events.</p>
+         </div>
+       </div>`,
+      'shopping'
+    );
+
+    // ESSENTIALS (placeholder — replace with your real spots)
+    photoMarker(
+      34.1695, -84.5021,
+      'assets/photos/coffee.jpg',
+      'Local Coffee',
+      `<div class="poi-popup">
+         <img src="assets/photos/coffee.jpg" alt="Local Coffee" />
+         <div class="poi-popup__body">
+           <strong>Local Coffee</strong>
+           <p>0.6 mi · Great morning stop</p>
+         </div>
+       </div>`,
+      'essentials'
+    );
+// Health and Wellness (placeholder — replace with your real spots)
+    photoMarker(
+      34.14682167443849, -84.51421678226514,
+      'assets/photos/ONF2.jpg',
+      'OneLife Fitness',
+      `<div class="poi-popup">
+         <img src="assets/photos/OnelifeFitness.jpg" alt="Onelife Fitness" />
+         <div class="poi-popup__body">
+           <strong>Onelife Fitness</strong>
+           <p>4 minute drive · Upscale fitness center with weights, cardio, group classes, reovery areas, pool and sauna</p>
+         </div>
+       </div>`,
+      'health'
+    );
+
+    // ── Category button logic ────────────────────────────────
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        const isActive = btn.classList.contains('active');
+
+        // Hide all markers and deactivate all buttons
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        Object.values(categories).forEach(markers =>
+          markers.forEach(m => m.remove())
+        );
+
+        // If this button wasn't already active, show its markers and fit the map
+        if (!isActive) {
+          btn.classList.add('active');
+          const markers = categories[cat];
+          markers.forEach(m => m.addTo(map));
+
+          if (markers.length > 0) {
+            const group = L.featureGroup([homeMarker, ...markers]);
+            map.fitBounds(group.getBounds(), { padding: [70, 70] });
+          }
+        }
+      });
+    });
   </script>
 
 </body>
