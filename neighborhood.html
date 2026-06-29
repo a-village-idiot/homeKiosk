@@ -38,11 +38,13 @@
 
     // ── Home marker (always visible) ─────────────────────────
     const homeIcon = L.divIcon({
-      html: `<div class="home-pin">🏠</div>`,
+      html: `<div class="photo-pin">
+               <img src="assets/photos/144_town_walk_drive.jpg" alt="Home" />
+             </div>`,
       className: '',
-      iconSize: [48, 48],
-      iconAnchor: [24, 48],
-      popupAnchor: [0, -52]
+      iconSize: [56, 56],
+      iconAnchor: [28, 56],
+      popupAnchor: [0, -60]
     });
 
     const homeMarker = L.marker([HOME_LAT, HOME_LNG], { icon: homeIcon })
