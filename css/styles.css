@@ -19,12 +19,13 @@ body.dashboard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
               url('../assets/photos/144_town_walk_drive.jpg') center/cover no-repeat fixed;
   gap: 2.5rem;
-  padding: 2rem;
+  padding: 3rem 2rem 2rem;
+  overflow-y: auto;
 }
 
 .site-header { text-align: center; }
