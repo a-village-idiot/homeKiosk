@@ -247,26 +247,23 @@ body.map-page {
 
 /* ── Category buttons ─────────────────────────── */
 .cat-buttons {
-  position: absolute;
-  bottom: 1.75rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: .65rem;
+  gap: .5rem;
+  padding: .65rem .75rem;
+  background: #f4f1ec;
+  flex-shrink: 0;
   z-index: 1000;
-  pointer-events: none;
 }
 
 .cat-btn {
-  pointer-events: all;
-  padding: .75rem 1.35rem;
+  padding: .6rem 1rem;
   background: #fff;
   border: none;
   border-radius: 2rem;
-  box-shadow: 0 2px 14px rgba(0,0,0,.22);
-  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  font-size: .9rem;
   font-weight: 600;
   font-family: 'Segoe UI', system-ui, sans-serif;
   cursor: pointer;
